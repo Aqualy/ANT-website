@@ -74,20 +74,66 @@
 	}
 </script>
 
-<section id="the-kit" aria-labelledby="kit-title" class="border-t-2 border-ant-black bg-ant-white py-16 md:py-24">
+<section id="the-kit" aria-labelledby="kit-title" class="pt-20 md:pt-28">
 	<div class="wrap">
-		<p class="eyebrow">The Kit</p>
-		<h2 id="kit-title" class="section-title mt-3 max-w-[48rem]">Explore the Blackout Communication Kit.</h2>
-		<p class="mt-5 max-w-[42rem] text-lg leading-snug">
-			A physical set of tools for meeting, organising and communicating without an online platform. It helps
-			neighbours learn and set up ANT together.
-		</p>
+		<div class="section-head">
+			<div>
+				<p class="label">02 &nbsp;The Kit</p>
+				<h2 id="kit-title" class="title mt-6 max-w-[16ch]">Explore the Blackout Communication Kit.</h2>
+			</div>
+			<p class="lead max-w-[30rem]">
+				A physical set of tools for meeting, organising and communicating without an online platform. One box, everything
+				on paper.
+			</p>
+		</div>
 
 		<!-- svelte-ignore a11y_no_static_element_interactions -->
-		<div class="mt-10 grid gap-6 lg:grid-cols-[1.7fr_1fr]" {onkeydown}>
-			<div class="flex flex-col border-2 border-ant-black">
-				<!-- Main actions are regular HTML controls above the canvas -->
-				<div class="flex flex-wrap items-center gap-3 border-b-2 border-ant-black bg-ant-white p-3">
+		<div class="mt-10 grid gap-8 lg:mt-14 lg:grid-cols-[1.8fr_1fr] lg:gap-12" {onkeydown}>
+			<!-- White stage: the one surface on the page meant to be handled and examined. -->
+			<div
+				bind:this={stage}
+				class="relative h-[62svh] min-h-[24rem] max-h-[44rem] overflow-hidden rounded-[2rem] bg-ant-white"
+			>
+				<p class="sr-only">
+					Interactive 3D concept model of the Blackout Communication Kit: a black box with the ANT logo containing six
+					printed items. All of its content is also available in the list next to it.
+				</p>
+				{#if show3D}
+					{#if near && viewerModule}
+						{#await viewerModule then mod}
+							<mod.default {kit} onready={() => (ready = true)} onfail={() => (failed = true)} />
+						{:catch}
+							<!-- handled by the import's catch handler -->
+						{/await}
+					{/if}
+					{#if !ready}
+						<div class="pointer-events-none absolute inset-0 grid place-items-center" aria-live="polite">
+							<p class="flex items-center gap-3 text-sm font-bold">
+								<span class="loader" aria-hidden="true"></span> Loading 3D kit…
+							</p>
+						</div>
+					{/if}
+				{:else if webgl !== 'unknown'}
+					<KitFallback
+						selected={kit.selected}
+						reason={failed
+							? 'The 3D view stopped working, so here is a simple plan of the kit.'
+							: 'Your browser cannot show the 3D view, so here is a simple plan of the kit.'}
+					/>
+					{#if failed}
+						<button type="button" class="btn btn-ghost btn-sm absolute top-4 right-4" onclick={retry3D}>Try 3D again</button>
+					{/if}
+				{/if}
+
+				<span class="chip pointer-events-none absolute top-4 left-4 bg-ant-white">Concept model</span>
+				{#if show3D}
+					<p class="pointer-events-none absolute top-4 right-4 hidden rounded-full bg-ant-white px-3 py-1 text-sm sm:block">
+						Drag to rotate · Scroll to zoom
+					</p>
+				{/if}
+
+				<!-- Main actions float over the stage, where the eye already is. -->
+				<div class="absolute inset-x-0 bottom-5 flex justify-center gap-3 px-4">
 					{#if kit.view === 'closed'}
 						<button type="button" class="btn btn-primary" onclick={() => kit.open()}>Open the kit</button>
 					{:else}
@@ -96,96 +142,51 @@
 								<span aria-hidden="true">←</span> Back to kit
 							</button>
 						{/if}
-						<button type="button" class="btn btn-secondary" onclick={() => kit.close()}>Close kit</button>
+						<button type="button" class="btn btn-ghost bg-ant-white" onclick={() => kit.close()}>Close kit</button>
 					{/if}
-					<p class="ml-auto text-sm" aria-hidden={!show3D}>
-						{#if show3D}
-							Drag to rotate. Scroll or pinch to zoom.{kit.isOpen ? ' Tap an item to inspect it.' : ''}
-						{/if}
-					</p>
-				</div>
-
-				<div
-					bind:this={stage}
-					class="relative h-[58svh] min-h-[22rem] max-h-[40rem] bg-ant-grey"
-				>
-					<p class="sr-only">
-						Interactive 3D concept model of the Blackout Communication Kit: a black box with the ANT logo containing six
-						printed items. All of its content is also available in the list of items.
-					</p>
-					{#if show3D}
-						{#if near && viewerModule}
-							{#await viewerModule then mod}
-								<mod.default {kit} onready={() => (ready = true)} onfail={() => (failed = true)} />
-							{:catch}
-								<!-- handled by the import's catch handler -->
-							{/await}
-						{/if}
-						{#if !ready}
-							<div class="pointer-events-none absolute inset-0 grid place-items-center" aria-live="polite">
-								<p class="flex items-center gap-3 bg-ant-white px-4 py-3 font-bold">
-									<span class="loader" aria-hidden="true"></span> Loading 3D kit…
-								</p>
-							</div>
-						{/if}
-					{:else if webgl !== 'unknown'}
-						<KitFallback
-							selected={kit.selected}
-							reason={failed
-								? 'The 3D view stopped working, so here is a simple plan of the kit.'
-								: 'Your browser cannot show the 3D view, so here is a simple plan of the kit.'}
-						/>
-						{#if failed}
-							<button type="button" class="btn btn-secondary absolute top-3 right-3" onclick={retry3D}>Try 3D again</button>
-						{/if}
-					{/if}
-					<span class="tag absolute bottom-3 left-3 bg-ant-white">Concept model</span>
 				</div>
 			</div>
 
-			<div class="flex flex-col gap-6">
-				<div class="border-2 border-ant-black p-6" aria-live="polite">
+			<div class="flex flex-col">
+				<h3 class="label">What's inside</h3>
+				<ol class="mt-4 border-t border-ant-black">
+					{#each kitItems as item, i (item.id)}
+						{@const active = kit.selected === item.id}
+						<li class="border-b border-ant-black">
+							<button
+								type="button"
+								class="group flex w-full items-center gap-4 py-3.5 text-left"
+								aria-pressed={active}
+								aria-controls="kit-detail"
+								onclick={() => choose(item.id)}
+							>
+								<span
+									class="grid size-9 shrink-0 place-items-center rounded-full border text-xs font-bold transition-colors duration-300 {active
+										? 'border-ant-green bg-ant-green'
+										: 'border-ant-black group-hover:bg-ant-black group-hover:text-ant-grey'}"
+									aria-hidden="true">{String(i + 1).padStart(2, '0')}</span
+								>
+								<span class="text-lg leading-tight {active ? 'font-bold' : ''}">{item.title}</span>
+							</button>
+						</li>
+					{/each}
+				</ol>
+
+				<div id="kit-detail" class="mt-6 min-h-[9rem]" aria-live="polite">
 					{#if selectedItem}
-						<p class="eyebrow">{selectedItem.form}</p>
-						<h3 class="mt-2 text-2xl">{selectedItem.title}</h3>
-						<p class="mt-3 text-lg leading-snug">{selectedItem.description}</p>
-						<p class="mt-3 leading-snug"><strong>Example:</strong> {selectedItem.example}</p>
+						<p class="label">{selectedItem.form}</p>
+						<p class="lead mt-3">{selectedItem.description}</p>
+						<p class="mt-3 leading-snug"><strong>For example:</strong> {selectedItem.example}</p>
 					{:else if kit.view === 'open'}
-						<p class="eyebrow">Kit open</p>
-						<h3 class="mt-2 text-2xl">Six printed tools inside</h3>
-						<p class="mt-3 leading-snug">Select an item in the box or in the list below to see what it is for.</p>
+						<p class="lead">Six printed tools. Pick one in the box or in the list to see what it is for.</p>
 					{:else}
-						<p class="eyebrow">Closed</p>
-						<h3 class="mt-2 text-2xl">One box, everything on paper</h3>
-						<p class="mt-3 leading-snug">Open the kit to see the printed tools that help neighbours set up ANT.</p>
+						<p class="lead">Open the kit to see the printed tools that help neighbours set up ANT.</p>
 					{/if}
 				</div>
 
-				<div>
-					<h3 class="eyebrow mb-3">What's inside</h3>
-					<ul class="grid gap-2 sm:grid-cols-2 lg:grid-cols-1">
-						{#each kitItems as item, i (item.id)}
-							<li>
-								<button
-									type="button"
-									class="flex min-h-12 w-full items-center gap-3 border-2 border-ant-black px-3 py-2 text-left font-bold transition-colors hover:bg-ant-grey {kit.selected ===
-									item.id
-										? 'bg-ant-green hover:bg-ant-green'
-										: 'bg-ant-white'}"
-									aria-pressed={kit.selected === item.id}
-									onclick={() => choose(item.id)}
-								>
-									<span class="grid size-7 shrink-0 place-items-center bg-ant-black text-sm text-ant-white">{i + 1}</span>
-									{item.title}
-								</button>
-							</li>
-						{/each}
-					</ul>
-				</div>
-
-				<p class="text-sm leading-snug">
-					This is a <strong>concept model</strong>. The box and printed items are design proposals drawn in the ANT
-					identity, not final print designs. Only the ANT logo is original artwork.
+				<p class="mt-6 text-sm leading-snug">
+					A <strong>concept model</strong>: the box and printed items are design proposals in the ANT identity, not final
+					print designs.
 				</p>
 			</div>
 		</div>
@@ -194,15 +195,15 @@
 
 <style>
 	.loader {
-		width: 1rem;
-		height: 1rem;
+		width: 0.75rem;
+		height: 0.75rem;
+		border-radius: 999px;
 		background: #c5d92f;
-		border: 2px solid #000;
 		animation: pulse 0.9s ease-in-out infinite alternate;
 	}
 	@keyframes pulse {
 		to {
-			transform: scale(0.5);
+			transform: scale(0.4);
 		}
 	}
 </style>

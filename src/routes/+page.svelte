@@ -3,6 +3,7 @@
 	import HowItWorks from '#lib/components/how/HowItWorks.svelte';
 	import KitSection from '#lib/components/kit/KitSection.svelte';
 	import GetInvolved from '#lib/components/GetInvolved.svelte';
+	import ClosingCta from '#lib/components/ClosingCta.svelte';
 </script>
 
 <svelte:head>
@@ -17,3 +18,4 @@
 <HowItWorks />
 <KitSection />
 <GetInvolved />
+<ClosingCta />

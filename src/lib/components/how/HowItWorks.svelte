@@ -1,103 +1,134 @@
 <script lang="ts">
-	import { diagramNodes, exampleUpdate, pillars, type DiagramNodeId } from '#lib/content.js';
-	import NetworkDiagram from './NetworkDiagram.svelte';
+	import { networkNodes, story } from '#lib/content.js';
+	import NetworkScene from './NetworkScene.svelte';
+	import { labelSideFor, positions } from './layout.js';
+	import type { NodeId } from '#lib/content.js';
 
-	let selected = $state<DiagramNodeId>('hub');
-	let step = $state<number | null>(null); // index into exampleUpdate while the example is shown
+	/*
+	 * Scroll story: the network stays pinned while six short steps scroll past.
+	 * The step nearest the reading line drives the scene, so readers watch one
+	 * update travel through the neighbourhood instead of decoding a diagram.
+	 */
+	let step = $state(0);
+	let list: HTMLOListElement;
+	let stageW = $state(0);
+	let stageH = $state(0);
 
-	const node = $derived(diagramNodes.find((n) => n.id === selected)!);
-	const activeLink = $derived.by((): [DiagramNodeId, DiagramNodeId] | null => {
-		if (step === null || step === 0) return null;
-		return [exampleUpdate[step - 1].node, exampleUpdate[step].node];
+	const pos = $derived(positions(stageW, stageH));
+	const R = $derived(Math.max(16, Math.min(stageW, stageH) * 0.062));
+	const reached = (i: number) => i <= step;
+	const nodeStep = (id: string) => story.findIndex((s) => s.node === id);
+
+	/** Label placement next to a node, on the side no connection leaves from. */
+	const sides = $derived(labelSideFor(stageW, stageH));
+	function labelStyle(id: NodeId, x: number, y: number) {
+		const r = R * (id === 'hub' ? 1.35 : 1) + 8;
+		switch (sides[id]) {
+			case 'above':
+				return `left:${x}px; top:${y - r}px; transform:translate(-50%,-100%)`;
+			case 'below':
+				return `left:${x}px; top:${y + r}px; transform:translateX(-50%)`;
+			case 'left':
+				return `left:${x - r}px; top:${y}px; transform:translate(-100%,-50%)`;
+			case 'right':
+				return `left:${x + r}px; top:${y}px; transform:translateY(-50%)`;
+		}
+	}
+
+	$effect(() => {
+		let raf = 0;
+		const update = () => {
+			raf = 0;
+			const items = list.querySelectorAll<HTMLElement>('[data-step]');
+			// Reading line: mid-screen on desktop, lower on phones where the scene is pinned on top.
+			const line = innerHeight * (innerWidth >= 1024 ? 0.5 : 0.72);
+			let best = 0;
+			let bestD = Infinity;
+			items.forEach((el, i) => {
+				const r = el.getBoundingClientRect();
+				const d = Math.abs(r.top + Math.min(r.height, 160) / 2 - line);
+				if (d < bestD) {
+					bestD = d;
+					best = i;
+				}
+			});
+			step = best;
+		};
+		const onScroll = () => {
+			if (!raf) raf = requestAnimationFrame(update);
+		};
+		update();
+		addEventListener('scroll', onScroll, { passive: true });
+		addEventListener('resize', onScroll);
+		return () => {
+			cancelAnimationFrame(raf);
+			removeEventListener('scroll', onScroll);
+			removeEventListener('resize', onScroll);
+		};
 	});
-
-	function select(id: DiagramNodeId) {
-		selected = id;
-		step = null;
-	}
-
-	function goTo(i: number) {
-		step = i;
-		selected = exampleUpdate[i].node;
-	}
 </script>
 
-<section id="how-it-works" aria-labelledby="how-title" class="border-t-2 border-ant-black bg-ant-grey py-16 md:py-24">
+<section id="how-it-works" aria-labelledby="how-title" class="pt-20 md:pt-28">
 	<div class="wrap">
-		<p class="eyebrow">How it works</p>
-		<h2 id="how-title" class="section-title mt-3 max-w-[48rem]">A network made of people, places and paper.</h2>
-		<p class="mt-5 max-w-[42rem] text-lg leading-snug">
-			ANT connects residents, community hubs, meeting points, signs and printed materials. Together they form one
-			physical system that keeps working without the internet. Tap a part of the network to learn what it does.
-		</p>
-
-		<div class="mt-10 grid gap-6 lg:grid-cols-[1.6fr_1fr]">
-			<div class="border-2 border-ant-black bg-ant-white p-3 sm:p-6">
-				<div class="hidden md:block">
-					<NetworkDiagram layout="wide" {selected} {activeLink} onselect={select} />
-				</div>
-				<div class="md:hidden">
-					<NetworkDiagram layout="tall" {selected} {activeLink} onselect={select} />
-				</div>
+		<div class="section-head">
+			<div>
+				<p class="label">01 &nbsp;How it works</p>
+				<h2 id="how-title" class="title mt-6 max-w-[16ch]">A network made of people, places and paper.</h2>
 			</div>
-
-			<div class="flex flex-col gap-6">
-				<div id="diagram-info" aria-live="polite" class="border-2 border-ant-black bg-ant-white p-6">
-					<p class="eyebrow">Part of the network</p>
-					<h3 class="mt-2 text-2xl">{node.title}</h3>
-					<p class="mt-2 text-lg leading-snug">{node.text}</p>
-				</div>
-
-				<div class="on-dark bg-ant-black p-6 text-ant-white">
-					<div class="flex flex-wrap items-center justify-between gap-2">
-						<h3 class="text-xl">Example: sharing an update</h3>
-						<span class="tag text-ant-green">Illustrative</span>
-					</div>
-					<p class="mt-2 text-ant-grey">How one piece of news travels through a neighbourhood without internet.</p>
-
-					{#if step === null}
-						<button type="button" class="btn btn-primary mt-5 w-full" onclick={() => goTo(0)}>Follow the update</button>
-					{:else}
-						<ol class="mt-5 space-y-2" aria-live="polite">
-							{#each exampleUpdate as s, i (i)}
-								<li class="flex gap-3 {i === step ? 'text-ant-white' : 'text-ant-grey/70'} {i > step ? 'sr-only' : ''}">
-									<span
-										class="grid size-7 shrink-0 place-items-center font-bold {i === step
-											? 'bg-ant-green text-ant-black'
-											: 'border border-ant-grey/70'}">{i + 1}</span
-									>
-									<span class="pt-0.5 {i === step ? 'font-bold' : ''}">{s.text}</span>
-								</li>
-							{/each}
-						</ol>
-						<div class="mt-5 flex gap-3">
-							<button
-								type="button"
-								class="btn btn-secondary flex-1"
-								disabled={step === 0}
-								onclick={() => step !== null && goTo(step - 1)}>Back</button
-							>
-							{#if step < exampleUpdate.length - 1}
-								<button type="button" class="btn btn-primary flex-1" onclick={() => step !== null && goTo(step + 1)}
-									>Next step</button
-								>
-							{:else}
-								<button type="button" class="btn btn-primary flex-1" onclick={() => goTo(0)}>Start again</button>
-							{/if}
-						</div>
-					{/if}
-				</div>
-			</div>
+			<p class="lead max-w-[30rem]">
+				ANT connects residents, community hubs, meeting points, signs and printed materials into one system that keeps
+				working without the internet. Follow one update as it travels.
+			</p>
 		</div>
 
-		<ul class="mt-12 grid gap-px border-2 border-ant-black bg-ant-black md:grid-cols-3">
-			{#each pillars as p, i (p.title)}
-				<li class="bg-ant-grey p-6">
-					<p class="text-sm font-bold">0{i + 1}</p>
-					<h3 class="mt-1 text-2xl">{p.title}</h3>
-					<p class="mt-2 leading-snug">{p.text}</p>
-				</li>
-			{/each}
-		</ul>
+		<div class="mt-10 grid lg:mt-16 lg:grid-cols-[1.15fr_1fr] lg:gap-16">
+			<!-- Pinned scene. On phones it pins to the top and the steps scroll beneath it. -->
+			<div
+				class="sticky top-16 z-10 -mx-5 flex h-[50svh] flex-col bg-ant-grey px-5 pt-3 md:-mx-10 md:px-10 lg:top-[calc(4rem+2rem)] lg:mx-0 lg:h-[calc(100svh-4rem-4rem)] lg:px-0 lg:pt-0"
+			>
+				<div class="flex items-center justify-between">
+					<p class="chip">Illustrative example</p>
+					<p class="label" aria-hidden="true">Step {step + 1} / {story.length}</p>
+				</div>
+				<div class="relative min-h-0 flex-1" bind:clientWidth={stageW} bind:clientHeight={stageH}>
+					<NetworkScene {step} />
+					{#each networkNodes as n (n.id)}
+						{@const [x, y] = pos[n.id]}
+						<span
+							class="pointer-events-none absolute text-[0.8rem] leading-tight whitespace-nowrap md:text-sm {reached(nodeStep(n.id))
+								? 'font-bold'
+								: ''}"
+							style={labelStyle(n.id, x, y)}
+							aria-hidden="true">{n.label}</span
+						>
+					{/each}
+				</div>
+			</div>
+
+			<ol bind:this={list} class="relative pt-[8svh] pb-[20svh] lg:pt-[24svh] lg:pb-[30svh]">
+				{#each story as s, i (s.node)}
+					<li data-step class="flex min-h-[52svh] items-start gap-5 lg:min-h-[62svh]" aria-current={i === step ? 'step' : undefined}>
+						<span
+							class="grid size-11 shrink-0 place-items-center rounded-full border border-ant-black text-sm font-bold transition-colors duration-300 {i ===
+							step
+								? 'border-ant-green bg-ant-green'
+								: ''}"
+							aria-hidden="true">{String(i + 1).padStart(2, '0')}</span
+						>
+						<div class="max-w-[26rem] pt-1.5">
+							<h3 class="text-3xl md:text-4xl">{s.title}</h3>
+							<p class="lead mt-4">{s.text}</p>
+						</div>
+					</li>
+				{/each}
+			</ol>
+		</div>
+
+		<div class="flex flex-col gap-6 border-t border-ant-black pt-8 pb-4 md:flex-row md:items-center md:justify-between">
+			<p class="font-display max-w-[30ch] text-2xl leading-tight [font-variation-settings:'opsz'_72] md:text-3xl">
+				No servers, no signal needed. Just neighbours who know where to look.
+			</p>
+			<a href="#the-kit" class="btn btn-ghost shrink-0">What you need to start <span class="arrow arrow-down" aria-hidden="true">↓</span></a>
+		</div>
 	</div>
 </section>

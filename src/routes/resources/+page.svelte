@@ -3,6 +3,7 @@
 	import ResourcePreview from '#lib/components/resources/ResourcePreview.svelte';
 
 	const statusLabel = { concept: 'Concept preview', 'coming-soon': 'Coming soon' } as const;
+	const ready = resources.filter((r) => r.status === 'concept').length;
 </script>
 
 <svelte:head>
@@ -13,52 +14,65 @@
 	/>
 </svelte:head>
 
-<section aria-labelledby="resources-title" class="border-b-2 border-ant-black bg-ant-green">
-	<div class="wrap py-14 md:py-20">
-		<p class="eyebrow">Resources</p>
-		<h1 id="resources-title" class="section-title mt-3 max-w-[44rem]">Printable materials from the Blackout Communication Kit.</h1>
-		<p class="mt-5 max-w-[40rem] text-lg leading-snug">
-			Everything in the kit is made to be printed, shared and used offline. The designs are still in progress: each item
-			shows whether it is a concept preview or coming soon.
-		</p>
+<section aria-labelledby="resources-title" class="pt-12 md:pt-20">
+	<div class="wrap">
+		<!-- First thing under the header's rule, so no second rule here. -->
+		<div class="section-head border-t-0 pt-0">
+			<div>
+				<p class="label">Resources</p>
+				<h1 id="resources-title" class="title mt-6 max-w-[18ch]">Printable materials from the Blackout Communication Kit.</h1>
+			</div>
+			<div class="max-w-[30rem]">
+				<p class="lead">
+					Everything in the kit is made to be printed, shared and used offline. The designs are still in progress.
+				</p>
+				<!-- Legend: green marks what you can already look at. -->
+				<p class="mt-6 flex flex-wrap gap-3 text-sm">
+					<span class="chip border-ant-green bg-ant-green">{ready} concept previews</span>
+					<span class="chip">{resources.length - ready} coming soon</span>
+				</p>
+			</div>
+		</div>
 	</div>
 </section>
 
-<section class="wrap py-14 md:py-20" aria-label="Materials">
-	<ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-		{#each resources as r (r.id)}
-			<li class="flex flex-col border-2 border-ant-black">
-				<div class="border-b-2 border-ant-black">
+<section class="wrap pt-12 pb-20 md:pt-16 md:pb-28" aria-label="Materials">
+	<ul class="grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+		{#each resources as r, i (r.id)}
+			<li class="flex flex-col">
+				<div class="overflow-hidden rounded-[1.5rem] bg-ant-white">
 					<ResourcePreview kind={r.preview} />
 				</div>
-				<div class="flex flex-1 flex-col p-5">
-					<p class="text-sm font-bold">{r.category}</p>
-					<h2 class="mt-1 text-xl">{r.title}</h2>
-					<p class="mt-2 flex-1 leading-snug">{r.text}</p>
-					<div class="mt-5">
-						{#if r.file}
-							<a href={r.file} download class="btn btn-primary">Download PDF</a>
-						{:else}
-							<span class="tag {r.status === 'concept' ? 'bg-ant-green' : 'bg-ant-grey'} border-ant-black">
-								{statusLabel[r.status]}
-							</span>
-							<span class="sr-only">, no download available yet.</span>
-						{/if}
-					</div>
+				<div class="mt-5 flex items-start justify-between gap-4 border-t border-ant-black pt-4">
+					<p class="label">{String(i + 1).padStart(2, '0')} &nbsp;{r.category}</p>
+					{#if !r.file}
+						<span class="chip shrink-0 {r.status === 'concept' ? 'border-ant-green bg-ant-green' : ''}">
+							{statusLabel[r.status]}
+						</span>
+					{/if}
 				</div>
+				<h2 class="mt-4 text-2xl md:text-3xl">{r.title}</h2>
+				<p class="mt-2 flex-1 leading-snug">{r.text}</p>
+				{#if r.file}
+					<a href={r.file} download class="btn btn-primary mt-5 self-start">Download PDF</a>
+				{:else}
+					<span class="sr-only">No download available yet.</span>
+				{/if}
 			</li>
 		{/each}
 	</ul>
 
-	<div class="mt-14 grid gap-6 border-t-2 border-ant-black pt-10 md:grid-cols-2">
-		<p class="text-lg leading-snug">
+	<div class="mt-20 grid gap-8 border-t border-ant-black pt-8 md:grid-cols-2">
+		<p class="lead">
 			<strong>Why no downloads yet?</strong> The final print files are not ready. Previews show the planned format so you
-			know what to expect. Nothing here is a finished design.
+			know what to expect.
 		</p>
-		<p class="leading-snug">
-			All materials are for preparing <em>before</em> a blackout: getting to know neighbours, learning the symbols and
-			practising together. This website is not a service for use during an emergency.
-		</p>
+		<div>
+			<p class="leading-snug">
+				All materials are for preparing <em>before</em> a blackout: getting to know neighbours, learning the symbols and
+				practising together.
+			</p>
+			<a href="/#the-kit" class="btn btn-ghost mt-6"><span aria-hidden="true">←</span> Explore the kit in 3D</a>
+		</div>
 	</div>
-	<p class="mt-10"><a href="/#the-kit" class="font-bold underline underline-offset-4">← Explore the kit in 3D</a></p>
 </section>

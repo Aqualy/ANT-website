@@ -6,7 +6,7 @@
 </script>
 
 <svg viewBox="0 0 240 170" class="block h-auto w-full" aria-hidden="true">
-	<rect width="240" height="170" fill="#dddddd" />
+	<rect width="240" height="170" fill="#ffffff" />
 	{#if kind === 'poster'}
 		<g transform="rotate(-3 120 85)">
 			<rect x="72" y="14" width="96" height="140" fill="#c5d92f" stroke="#000" stroke-width="2" />

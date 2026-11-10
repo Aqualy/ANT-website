@@ -10,7 +10,6 @@ export const brand = {
 } as const;
 
 export const nav = [
-	{ label: 'ANT', href: '/#home' },
 	{ label: 'How it works', href: '/#how-it-works' },
 	{ label: 'The Kit', href: '/#the-kit' },
 	{ label: 'Get involved', href: '/#get-involved' },
@@ -19,103 +18,60 @@ export const nav = [
 
 /* ---------- How it works ---------- */
 
-export type DiagramNodeId = 'residents' | 'hub' | 'printed' | 'wayfinding' | 'meeting' | 'neighbours';
+export type NodeId = 'residents' | 'hub' | 'printed' | 'neighbours' | 'wayfinding' | 'meeting';
 
-export type DiagramNode = {
-	id: DiagramNodeId;
-	title: string;
-	text: string;
-	/** position in the 1000 x 620 diagram space */
-	x: number;
-	y: number;
-	shape: 'circle' | 'square' | 'sheet' | 'arrow' | 'pin';
-};
-
-export const diagramNodes: DiagramNode[] = [
-	{
-		id: 'residents',
-		title: 'Residents',
-		text: 'People who live near each other get to know one another before they need to. Trust starts here.',
-		x: 140,
-		y: 150,
-		shape: 'circle'
-	},
-	{
-		id: 'hub',
-		title: 'Community hub',
-		text: 'An agreed local place where information is collected, checked and posted for everyone.',
-		x: 500,
-		y: 310,
-		shape: 'square'
-	},
-	{
-		id: 'printed',
-		title: 'Printed materials',
-		text: 'Posters, cards and maps carry information on paper, so nothing depends on a screen.',
-		x: 500,
-		y: 80,
-		shape: 'sheet'
-	},
-	{
-		id: 'wayfinding',
-		title: 'Wayfinding',
-		text: 'Shared symbols in public space point people to hubs and meeting points.',
-		x: 860,
-		y: 150,
-		shape: 'arrow'
-	},
-	{
-		id: 'meeting',
-		title: 'Meeting point',
-		text: 'A known spot where residents gather and volunteers pass on checked information by word of mouth.',
-		x: 860,
-		y: 480,
-		shape: 'pin'
-	},
-	{
-		id: 'neighbours',
-		title: 'Neighbours',
-		text: 'People who read an update share it with the people around them, and the network grows.',
-		x: 140,
-		y: 480,
-		shape: 'circle'
-	}
+/** The parts of the network, drawn as blobs in the story scene. */
+export const networkNodes: { id: NodeId; label: string }[] = [
+	{ id: 'residents', label: 'Residents' },
+	{ id: 'hub', label: 'Community hub' },
+	{ id: 'printed', label: 'Printed update' },
+	{ id: 'neighbours', label: 'Neighbours' },
+	{ id: 'wayfinding', label: 'Wayfinding' },
+	{ id: 'meeting', label: 'Meeting point' }
 ];
 
-export const diagramLinks: [DiagramNodeId, DiagramNodeId][] = [
-	['residents', 'hub'],
-	['printed', 'hub'],
-	['hub', 'wayfinding'],
-	['wayfinding', 'meeting'],
-	['hub', 'meeting'],
-	['hub', 'neighbours'],
-	['neighbours', 'residents'],
-	['meeting', 'neighbours']
-];
-
-/** Illustrative example: one update travelling through a neighbourhood. */
-export const exampleUpdate = [
-	{ node: 'hub', text: 'A community hub posts an update using ANT symbols.' },
-	{ node: 'residents', text: 'Residents passing by read the sign.' },
-	{ node: 'neighbours', text: 'They tell the neighbours on their street.' },
-	{ node: 'meeting', text: 'Everyone meets at the agreed meeting point.' }
-] as const satisfies readonly { node: DiagramNodeId; text: string }[];
-
-/** Pillars — limited to what the project references define. */
-export const pillars = [
+/**
+ * Illustrative example: one update travelling through a neighbourhood.
+ * Each step lights up a node and grows a connection from the `from` nodes.
+ */
+export const story: { node: NodeId; from: NodeId[]; title: string; text: string }[] = [
 	{
-		title: 'Community',
-		text: 'Residents get to know one another and practise together through workshops and simulations.'
+		node: 'residents',
+		from: [],
+		title: 'It starts with people',
+		text: 'Residents get to know one another long before they need to. Trust is what the network runs on.'
 	},
 	{
-		title: 'Visual',
-		text: 'A shared set of symbols and signs marks information points and displays important updates.'
+		node: 'hub',
+		from: ['residents'],
+		title: 'News reaches the hub',
+		text: 'A resident brings news to the agreed community hub. There it is checked and written down.'
 	},
 	{
-		title: 'Spoken word',
-		text: 'At known meeting points, volunteers pass on checked information in person.'
+		node: 'printed',
+		from: ['hub'],
+		title: 'The update goes up on paper',
+		text: 'The hub posts the update using shared ANT symbols, so anyone can read it without a screen.'
+	},
+	{
+		node: 'neighbours',
+		from: ['printed'],
+		title: 'Neighbours pass it on',
+		text: 'People who read the sign tell the neighbours on their street, and the update keeps travelling.'
+	},
+	{
+		node: 'wayfinding',
+		from: ['hub'],
+		title: 'Signs show the way',
+		text: 'Symbols in public space point everyone to the hub and to the meeting point.'
+	},
+	{
+		node: 'meeting',
+		from: ['neighbours', 'wayfinding'],
+		title: 'Everyone meets',
+		text: 'Residents gather at the agreed meeting point, where volunteers share what is known, in person.'
 	}
-] as const;
+];
 
 /* ---------- The Kit ---------- */
 
