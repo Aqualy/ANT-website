@@ -1,0 +1,2 @@
+# Must stay byte-identical to the supplied asset (mixed CRLF/LF line endings): never normalise.
+static/blobs-background.html binary
