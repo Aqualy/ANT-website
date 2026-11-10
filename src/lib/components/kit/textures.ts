@@ -36,7 +36,7 @@ function drawLogo(ctx: Ctx, x: number, y: number, height: number, color: string,
 	ctx.scale(s, s);
 	if (part === 'symbol') ctx.translate(-15, 0);
 	ctx.fillStyle = color;
-	ctx.fill(new Path2D(LOGO_SYMBOL_PATH));
+	ctx.fill(new Path2D(LOGO_SYMBOL_PATH), 'evenodd');
 	if (part === 'full') for (const d of LOGO_WORDMARK_PATHS) ctx.fill(new Path2D(d));
 	ctx.restore();
 }
