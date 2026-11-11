@@ -18,58 +18,65 @@ export const nav = [
 
 /* ---------- How it works ---------- */
 
-export type NodeId = 'residents' | 'hub' | 'printed' | 'neighbours' | 'wayfinding' | 'meeting';
+export type NodeId = 'you' | 'blob' | 'booklet' | 'private' | 'board' | 'marks' | 'far';
 
 /** The parts of the network, drawn as blobs in the story scene. */
 export const networkNodes: { id: NodeId; label: string }[] = [
-	{ id: 'residents', label: 'Residents' },
-	{ id: 'hub', label: 'Community hub' },
-	{ id: 'printed', label: 'Printed update' },
-	{ id: 'neighbours', label: 'Neighbours' },
-	{ id: 'wayfinding', label: 'Wayfinding' },
-	{ id: 'meeting', label: 'Meeting point' }
+	{ id: 'you', label: 'You' },
+	{ id: 'blob', label: 'Local Blob' },
+	{ id: 'booklet', label: 'Public booklet' },
+	{ id: 'private', label: 'Private profile' },
+	{ id: 'board', label: 'Symbol board' },
+	{ id: 'marks', label: 'Marked places' },
+	{ id: 'far', label: 'Another Blob' }
 ];
 
 /**
- * Illustrative example: one update travelling through a neighbourhood.
+ * Illustrative example: one resident joining the network through a local Blob.
  * Each step lights up a node and grows a connection from the `from` nodes.
  */
 export const story: { node: NodeId; from: NodeId[]; title: string; text: string }[] = [
 	{
-		node: 'residents',
+		node: 'you',
 		from: [],
-		title: 'It starts with people',
-		text: 'Residents get to know one another long before they need to. Trust is what the network runs on.'
+		title: 'Make your paper profile',
+		text: 'With the Blackout Communication Kit you fill in a profile on paper: pictures, stories and interests, added with interest-token stickers or written by hand.'
 	},
 	{
-		node: 'hub',
-		from: ['residents'],
-		title: 'News reaches the hub',
-		text: 'A resident brings news to the agreed community hub. There it is checked and written down.'
+		node: 'blob',
+		from: ['you'],
+		title: 'Hand it in at a nearby Blob',
+		text: 'A Blob is a local point run by volunteer operators. When you submit your profile there, you choose whether it is public or private.'
 	},
 	{
-		node: 'printed',
-		from: ['hub'],
-		title: 'The update goes up on paper',
-		text: 'The hub posts the update using shared ANT symbols, so anyone can read it without a screen.'
+		node: 'booklet',
+		from: ['blob'],
+		title: 'Public: anyone can browse',
+		text: 'Public profiles go into the Blob’s booklet. Neighbours leaf through it, find shared interests and experiences, and get to know you, much like social media, but on paper.'
 	},
 	{
-		node: 'neighbours',
-		from: ['printed'],
-		title: 'Neighbours pass it on',
-		text: 'People who read the sign tell the neighbours on their street, and the update keeps travelling.'
+		node: 'private',
+		from: ['blob'],
+		title: 'Private: browse on request',
+		text: 'Others still see your name and profile picture. To read more, they leave a request with the Blob operators, who pass it on the next time you visit. You decide.'
 	},
 	{
-		node: 'wayfinding',
-		from: ['hub'],
-		title: 'Signs show the way',
-		text: 'Symbols in public space point everyone to the hub and to the meeting point.'
+		node: 'board',
+		from: ['blob'],
+		title: 'Add a symbol of your own',
+		text: 'Design a symbol, explain it on a form and hand both in at the Blob. The operators put it on the public board so everyone can learn it.'
 	},
 	{
-		node: 'meeting',
-		from: ['neighbours', 'wayfinding'],
-		title: 'Everyone meets',
-		text: 'Residents gather at the agreed meeting point, where volunteers share what is known, in person.'
+		node: 'marks',
+		from: ['board'],
+		title: 'Symbols mark the neighbourhood',
+		text: 'Once people know it, your symbol can mark events, places or anything else your community wants to point out.'
+	},
+	{
+		node: 'far',
+		from: ['blob'],
+		title: 'Blobs reach further',
+		text: 'Copies of your profile can be kept at other Blobs, so you can meet people who live further away. When there is electricity, Blobs can also send data to each other as light through fibre-optic cable.'
 	}
 ];
 
@@ -112,7 +119,7 @@ export const kitItems: KitItem[] = [
 		title: 'Paper Profiles',
 		form: 'Stack of profile cards',
 		description: 'A social profile on paper for your interests, stories and messages.',
-		example: 'Pin your profile at the hub and meet a neighbour with a shared interest.'
+		example: 'Hand in your profile at a Blob and meet a neighbour with a shared interest.'
 	},
 	{
 		id: 'tokens',
@@ -123,10 +130,10 @@ export const kitItems: KitItem[] = [
 	},
 	{
 		id: 'signage',
-		title: 'Community Hub Signage',
+		title: 'Blob Signage',
 		form: 'Folded signs',
 		description: 'Printed signs that clearly label the places where information is shared.',
-		example: 'Put up a sign so everyone can find the local information point.'
+		example: 'Put up a sign so everyone can find the local Blob.'
 	}
 ];
 
@@ -175,7 +182,7 @@ export const resources: Resource[] = [
 		id: 'map',
 		category: 'Maps',
 		title: 'Neighbourhood map template',
-		text: 'A blank map to mark your local hub, meeting point and information points.',
+		text: 'A blank map to mark your local Blob, meeting point and information points.',
 		status: 'concept',
 		preview: 'map'
 	},

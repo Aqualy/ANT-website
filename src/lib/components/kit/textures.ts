@@ -81,7 +81,7 @@ const lidInside = () =>
 			'Community Cards',
 			'Paper Profiles',
 			'Interest Tokens',
-			'Community Hub Signage'
+			'Blob Signage'
 		];
 		items.forEach((label, i) => {
 			const y = 210 + i * 70;
@@ -180,12 +180,12 @@ const mapCover = () =>
 		ctx.lineTo(300, 430);
 		ctx.stroke();
 		ctx.setLineDash([]);
-		for (const [x, y, hub] of [
+		for (const [x, y, blob] of [
 			[140, 200, true],
 			[300, 430, false],
 			[60, 420, false]
 		] as const) {
-			ctx.fillStyle = hub ? GREEN : WHITE;
+			ctx.fillStyle = blob ? GREEN : WHITE;
 			ctx.strokeStyle = BLACK;
 			ctx.lineWidth = 5;
 			ctx.beginPath();
@@ -206,8 +206,8 @@ const signage = () =>
 		ctx.fillStyle = GREEN;
 		ctx.fillRect(0, 0, w, h);
 		drawLogo(ctx, 36, 50, 150, BLACK, 'symbol');
-		text(ctx, 'Community', 220, 110, 50, BLACK);
-		text(ctx, 'Hub', 220, 164, 50, BLACK);
+		text(ctx, 'Local', 220, 110, 50, BLACK);
+		text(ctx, 'Blob', 220, 164, 50, BLACK);
 		text(ctx, 'Information point', 220, 210, 26, BLACK, 400);
 		ctx.strokeStyle = BLACK;
 		ctx.setLineDash([10, 10]);

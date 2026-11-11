@@ -41,7 +41,7 @@
 			live[id] = [x + wx, y + wy];
 			const lit = nodeLit[id];
 			const current = story[step]?.node === id ? 1 : 0;
-			const r = R * (id === 'hub' ? 1.35 : 1) * (0.78 + 0.22 * lit + 0.12 * current);
+			const r = R * (id === 'blob' ? 1.35 : 1) * (0.78 + 0.22 * lit + 0.12 * current);
 			blobs.push({ id: i + 1, x: x + wx, y: y + wy, r, color: lit > 0.5 ? C.green : C.white });
 		});
 

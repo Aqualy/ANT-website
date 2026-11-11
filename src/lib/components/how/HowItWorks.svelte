@@ -5,9 +5,9 @@
 	import type { NodeId } from '#lib/content.js';
 
 	/*
-	 * Scroll story: the network stays pinned while six short steps scroll past.
+	 * Scroll story: the network stays pinned while the story steps scroll past.
 	 * The step nearest the reading line drives the scene, so readers watch one
-	 * update travel through the neighbourhood instead of decoding a diagram.
+	 * resident join the network instead of decoding a diagram.
 	 */
 	let step = $state(0);
 	let list: HTMLOListElement;
@@ -20,9 +20,9 @@
 	const nodeStep = (id: string) => story.findIndex((s) => s.node === id);
 
 	/** Label placement next to a node, on the side no connection leaves from. */
-	const sides = $derived(labelSideFor(stageW, stageH));
+	const sides = labelSideFor();
 	function labelStyle(id: NodeId, x: number, y: number) {
-		const r = R * (id === 'hub' ? 1.35 : 1) + 8;
+		const r = R * (id === 'blob' ? 1.35 : 1) * 1.12 + 10;
 		switch (sides[id]) {
 			case 'above':
 				return `left:${x}px; top:${y - r}px; transform:translate(-50%,-100%)`;
@@ -76,8 +76,8 @@
 				<h2 id="how-title" class="title mt-6 max-w-[16ch]">A network made of people, places and paper.</h2>
 			</div>
 			<p class="lead max-w-[30rem]">
-				ANT connects residents, community hubs, meeting points, signs and printed materials into one system that keeps
-				working without the internet. Follow one update as it travels.
+				ANT connects neighbours through local Blobs: paper profiles to get to know each other, shared symbols to mark
+				the neighbourhood and, when there is power, light between Blobs. Follow one resident as they join.
 			</p>
 		</div>
 

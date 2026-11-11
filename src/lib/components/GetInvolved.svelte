@@ -105,7 +105,7 @@
 		</div>
 
 		<p class="mt-14 max-w-[40rem] text-sm leading-snug">
-			ANT does not yet run workshops or hubs. Any meeting places shown on this site are examples.
+			ANT does not yet run workshops or Blobs. Any meeting places shown on this site are examples.
 		</p>
 	</div>
 </section>

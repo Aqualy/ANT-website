@@ -2,20 +2,22 @@ import type { NodeId } from '#lib/content.js';
 
 /** Node positions as fractions of the story canvas, for landscape and portrait canvases. */
 const WIDE: Record<NodeId, [number, number]> = {
-	residents: [0.16, 0.18],
-	hub: [0.42, 0.42],
-	printed: [0.8, 0.16],
-	neighbours: [0.82, 0.6],
-	wayfinding: [0.18, 0.7],
-	meeting: [0.52, 0.86]
+	you: [0.14, 0.22],
+	blob: [0.42, 0.46],
+	booklet: [0.78, 0.16],
+	private: [0.84, 0.48],
+	board: [0.14, 0.66],
+	marks: [0.46, 0.86],
+	far: [0.78, 0.82]
 };
 const TALL: Record<NodeId, [number, number]> = {
-	residents: [0.2, 0.2],
-	hub: [0.42, 0.44],
-	printed: [0.8, 0.2],
-	neighbours: [0.8, 0.56],
-	wayfinding: [0.2, 0.72],
-	meeting: [0.54, 0.86]
+	you: [0.2, 0.17],
+	blob: [0.46, 0.44],
+	booklet: [0.8, 0.17],
+	private: [0.82, 0.5],
+	board: [0.16, 0.65],
+	marks: [0.5, 0.86],
+	far: [0.78, 0.83]
 };
 
 export const layoutFor = (w: number, h: number) => (w / Math.max(h, 1) >= 0.95 ? WIDE : TALL);
@@ -31,23 +33,18 @@ export function positions(w: number, h: number) {
 
 type Side = 'above' | 'below' | 'left' | 'right';
 
-/** Where each label sits, on the side no connection leaves from (and inside the canvas). */
-export const labelSideFor = (w: number, h: number): Record<NodeId, Side> => (layoutFor(w, h) === WIDE ? SIDES_WIDE : SIDES_TALL);
-
-const SIDES_TALL: Record<NodeId, Side> = {
-	residents: 'above',
-	hub: 'right',
-	printed: 'above',
-	neighbours: 'left',
-	wayfinding: 'right',
-	meeting: 'below'
+/**
+ * Where each label sits, on the side no connection leaves from (and inside the canvas).
+ * Both layouts share it: the local Blob is the centre of a star, with its left side free.
+ */
+const SIDES: Record<NodeId, Side> = {
+	you: 'above',
+	blob: 'left',
+	booklet: 'above',
+	private: 'below',
+	board: 'below',
+	marks: 'below',
+	far: 'below'
 };
 
-const SIDES_WIDE: Record<NodeId, Side> = {
-	residents: 'above',
-	hub: 'right',
-	printed: 'above',
-	neighbours: 'right',
-	wayfinding: 'left',
-	meeting: 'below'
-};
+export const labelSideFor = (): Record<NodeId, Side> => SIDES;
