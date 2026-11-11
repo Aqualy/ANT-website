@@ -13,6 +13,7 @@ npm run preview
 ## Routes
 - `/` — Home (hero), How it works, The Kit, Get involved
 - `/resources` — printable materials (concept previews / coming soon, no downloads until real files exist)
+- `/explore` — how ANT works as a 3D infographic: one paper neighbourhood, nine chapters (`#intro`, `#kit`, `#profile`, `#blob`, `#public`, `#private`, `#symbols`, `#further`, `#outro`). Next/Previous, numbered dots, arrow keys, wheel, swipe, optional autoplay. `?nowebgl` forces the 2D fallback, `?debug` exposes `window.__explore` (frame counter, busy flag).
 
 ## Where things live
 | What | File |
@@ -23,6 +24,8 @@ npm run preview
 | Blob engine (verbatim port of the supplied animation) and scenes | `src/lib/blobs/` (`engine.js`, `BlobCanvas.svelte`, `originalScene.ts`); reference copy in `static/blobs-background.html` |
 | Logos (supplied SVGs) | `static/brand/`, path data for 3D textures in `src/lib/brand/logo-paths.ts` |
 | How it works scroll story | `src/lib/components/how/` |
+| Shared 3D world (reusable, knows nothing about chapters) | `src/lib/components/world/` — `world.ts` (`createWorld()`: the whole diorama, `apply(state)`, `anchors`, `billboards`, `dispose()`), `state.ts` (`WorldState`, the numbers that drive it), `layout.ts` (every position), `blobHost.ts` (one shared blob-engine renderer feeding CanvasTextures), `prints.ts` + `pictos.ts` (canvas painters for the paper) |
+| `/explore` chapters | `src/lib/components/explore/` — `chapters.ts` (copy, camera shot, labels and world targets per chapter, in one array), `ExploreScene` (damps the state, moves the camera, projects labels), `ExploreViewer` (canvas, HTML labels, context loss), `ExploreFallback` (2D diagrams), `exploreState.svelte.ts`; page in `src/routes/explore/`; plan in `docs/explore-plan.md` |
 | 3D kit (lazy-loaded) | `src/lib/components/kit/` — `KitSection` (HTML controls + panel), `KitViewer` (Canvas), `KitScene` (camera, lights, controls), `KitBox`, `KitObject` (item animation), `KitItemModel` (geometry), `textures.ts` (concept print textures) |
 
 ## Adding a real download
@@ -31,4 +34,5 @@ Put the file in `static/downloads/` and set `file: '/downloads/<name>.pdf'` on t
 ## Notes
 - Blob canvases only render while on screen and the tab is visible; the 3D viewer is only loaded/mounted while the kit section is near, and renders on demand.
 - Without WebGL (or after a lost GPU context) the kit shows a 2D plan; all item content is always available in the HTML list.
-- `prefers-reduced-motion`: blob scenes show a still frame and snap between states, and kit transitions jump instantly.
+- `prefers-reduced-motion`: blob scenes show a still frame and snap between states, and kit transitions jump instantly. On `/explore` the camera cuts and nothing loops.
+- `/explore` renders on demand and stops completely once a chapter has settled. Without WebGL2 (or after a lost context) it shows the same chapters as flat diagrams.

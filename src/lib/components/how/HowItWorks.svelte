@@ -75,10 +75,13 @@
 				<p class="label">01 &nbsp;How it works</p>
 				<h2 id="how-title" class="title mt-6 max-w-[16ch]">A network made of people, places and paper.</h2>
 			</div>
-			<p class="lead max-w-[30rem]">
-				ANT connects neighbours through local Blobs: paper profiles to get to know each other, shared symbols to mark
-				the neighbourhood and, when there is power, light between Blobs. Follow one resident as they join.
-			</p>
+			<div class="max-w-[30rem]">
+				<p class="lead">
+					ANT connects neighbours through local Blobs: paper profiles to get to know each other, shared symbols to mark
+					the neighbourhood and, when there is power, light between Blobs. Follow one resident as they join.
+				</p>
+				<a href="/explore" class="btn btn-ghost mt-6">Walk through it in 3D <span class="arrow" aria-hidden="true">→</span></a>
+			</div>
 		</div>
 
 		<div class="mt-10 grid lg:mt-16 lg:grid-cols-[1.15fr_1fr] lg:gap-16">
