@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Resource } from '#lib/content.js';
 
-	/** Simple concept thumbnails in the ANT palette. Not final artwork. */
+	/** Simple thumbnails in the ANT palette. */
 	let { kind }: { kind: Resource['preview'] } = $props();
 </script>
 

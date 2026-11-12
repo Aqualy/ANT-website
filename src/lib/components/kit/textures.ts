@@ -1,6 +1,6 @@
 /**
- * Procedural print textures for the Blackout Communication Kit concept model.
- * Everything here is a CONCEPT mock-up drawn in the ANT palette. The only supplied
+ * Procedural print textures for the Blackout Communication Kit 3D model.
+ * Everything here is drawn in the ANT palette. The only supplied
  * artwork used is the ANT logo, painted from its original SVG path data.
  */
 import { CanvasTexture, SRGBColorSpace, type Texture } from 'three';
@@ -51,10 +51,6 @@ function text(ctx: Ctx, str: string, x: number, y: number, size: number, color: 
 	ctx.fillText(str, x, y);
 }
 
-function concept(ctx: Ctx, str: string, x: number, y: number, color: string, size = 16, align: CanvasTextAlign = 'left') {
-	text(ctx, str.toUpperCase(), x, y, size, color, 700, align);
-}
-
 /* ---------- Box ---------- */
 
 const lidTop = () =>
@@ -67,7 +63,6 @@ const lidTop = () =>
 		ctx.fillStyle = GREEN;
 		ctx.fillRect(0, h - 110, w, 110);
 		text(ctx, 'Adaptive Network of Trust', 64, h - 42, 36, BLACK);
-		concept(ctx, 'Concept packaging', w - 64, h - 44, BLACK, 22, 'right');
 	});
 
 const lidInside = () =>
@@ -91,7 +86,6 @@ const lidInside = () =>
 			text(ctx, label, 132, y, 38, BLACK, 400);
 		});
 		drawLogo(ctx, w - 70 - logoWidth(70, 'symbol'), 70, 70, BLACK, 'symbol');
-		concept(ctx, 'Concept print', w - 70, h - 50, BLACK, 20, 'right');
 	});
 
 const lidFront = () =>
@@ -114,7 +108,7 @@ const boxFront = () =>
 
 /* ---------- Contents ---------- */
 
-/** Visual Language Kit sheet: illustrative geometric shapes, not the final pictograms. */
+/** Visual Language Kit sheet: geometric shapes. */
 const pictogramSheet = () =>
 	make(512, 576, (ctx, w, h) => {
 		ctx.fillStyle = WHITE;
@@ -145,7 +139,6 @@ const pictogramSheet = () =>
 				else (ctx.moveTo(x, y - 26), ctx.lineTo(x + 26, y), ctx.lineTo(x, y + 26), ctx.lineTo(x - 26, y));
 				ctx.fill();
 			}
-		concept(ctx, 'Illustrative shapes, not final symbols', 28, h - 20, BLACK, 15);
 	});
 
 /** Neighbourhood Map cover: abstract streets and example points. */
@@ -198,7 +191,6 @@ const mapCover = () =>
 		text(ctx, 'Neighbourhood', 26, 46, 32, WHITE);
 		text(ctx, 'Map', 26, 84, 32, GREEN);
 		drawLogo(ctx, w - 26 - logoWidth(52, 'symbol'), 26, 52, WHITE, 'symbol');
-		concept(ctx, 'Example layout', 26, h - 22, BLACK, 16);
 	});
 
 const signage = () =>
@@ -217,7 +209,6 @@ const signage = () =>
 		ctx.lineTo(w, h * 0.68);
 		ctx.stroke();
 		ctx.setLineDash([]);
-		concept(ctx, 'Example sign', 36, h - 34, BLACK, 18);
 	});
 
 const cardBack = () =>
@@ -284,7 +275,6 @@ const profileCard = () =>
 		text(ctx, 'My story / message', 26, 404, 22, BLACK);
 		ctx.fillStyle = GREY;
 		for (let i = 0; i < 5; i++) ctx.fillRect(26, 424 + i * 26, w - 52, 3);
-		concept(ctx, 'Concept layout', 26, h - 18, BLACK, 15);
 	});
 
 const stickerSheet = () =>
@@ -309,7 +299,6 @@ const stickerSheet = () =>
 				else (ctx.moveTo(x, y - 11), ctx.lineTo(x + 11, y + 9), ctx.lineTo(x - 11, y + 9));
 				ctx.fill();
 			}
-		concept(ctx, 'Example stickers', 20, h - 20, BLACK, 15);
 	});
 
 const tokenFace = () =>

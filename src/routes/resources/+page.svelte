@@ -2,8 +2,8 @@
 	import { resources } from '#lib/content.js';
 	import ResourcePreview from '#lib/components/resources/ResourcePreview.svelte';
 
-	const statusLabel = { concept: 'Concept preview', 'coming-soon': 'Coming soon' } as const;
-	const ready = resources.filter((r) => r.status === 'concept').length;
+	const statusLabel = { preview: 'Preview', 'coming-soon': 'Coming soon' } as const;
+	const ready = resources.filter((r) => r.status === 'preview').length;
 </script>
 
 <svelte:head>
@@ -28,7 +28,7 @@
 				</p>
 				<!-- Legend: green marks what you can already look at. -->
 				<p class="mt-6 flex flex-wrap gap-3 text-sm">
-					<span class="chip border-ant-green bg-ant-green">{ready} concept previews</span>
+					<span class="chip border-ant-green bg-ant-green">{ready} previews</span>
 					<span class="chip">{resources.length - ready} coming soon</span>
 				</p>
 			</div>
@@ -46,7 +46,7 @@
 				<div class="mt-5 flex items-start justify-between gap-4 border-t border-ant-black pt-4">
 					<p class="label">{String(i + 1).padStart(2, '0')} &nbsp;{r.category}</p>
 					{#if !r.file}
-						<span class="chip shrink-0 {r.status === 'concept' ? 'border-ant-green bg-ant-green' : ''}">
+						<span class="chip shrink-0 {r.status === 'preview' ? 'border-ant-green bg-ant-green' : ''}">
 							{statusLabel[r.status]}
 						</span>
 					{/if}
@@ -64,7 +64,7 @@
 
 	<div class="mt-20 grid gap-8 border-t border-ant-black pt-8 md:grid-cols-2">
 		<p class="lead">
-			<strong>Why no downloads yet?</strong> The final print files are not ready. Previews show the planned format so you
+			<strong>Why no downloads yet?</strong> The final print files are not ready. Previews show the format so you
 			know what to expect.
 		</p>
 		<div>

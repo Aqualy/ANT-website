@@ -87,7 +87,6 @@
 					<p style="margin:0;font:700 12.5px/1.15 var(--font-sans);color:#000">{t}</p>
 				</foreignObject>
 			{/each}
-			<text x="400" y="545" text-anchor="middle" font-size="14">Concept model</text>
 		{:else if index === 2}
 			<g transform="translate(250 40) scale(2)">{@render card(0, 0, 'Noor', 3, false)}</g>
 			<text x="570" y="380" font-size="20" font-style="italic">+ fixing radios</text>

@@ -241,7 +241,6 @@
 			</div>
 		{/if}
 		<div class="absolute top-4 left-5 flex flex-wrap items-center gap-2 md:left-10">
-			<span class="chip pointer-events-none bg-ant-white">Speculative concept</span>
 			{#if failed}
 				<button type="button" class="btn btn-ghost btn-sm" onclick={retry3D}>Try 3D again</button>
 			{/if}

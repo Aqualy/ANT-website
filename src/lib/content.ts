@@ -32,7 +32,7 @@ export const networkNodes: { id: NodeId; label: string }[] = [
 ];
 
 /**
- * Illustrative example: one resident joining the network through a local Blob.
+ * One resident joining the network through a local Blob.
  * Each step lights up a node and grows a connection from the `from` nodes.
  */
 export const story: { node: NodeId; from: NodeId[]; title: string; text: string }[] = [
@@ -148,7 +148,7 @@ export const prepareSteps = [
 
 /* ---------- Resources ---------- */
 
-export type ResourceStatus = 'concept' | 'coming-soon';
+export type ResourceStatus = 'preview' | 'coming-soon';
 
 export type Resource = {
 	id: string;
@@ -167,7 +167,7 @@ export const resources: Resource[] = [
 		category: 'Posters',
 		title: 'Campaign posters',
 		text: 'Posters that introduce ANT in shared spaces like stairwells, shops and libraries.',
-		status: 'concept',
+		status: 'preview',
 		preview: 'poster'
 	},
 	{
@@ -183,7 +183,7 @@ export const resources: Resource[] = [
 		category: 'Maps',
 		title: 'Neighbourhood map template',
 		text: 'A blank map to mark your local Blob, meeting point and information points.',
-		status: 'concept',
+		status: 'preview',
 		preview: 'map'
 	},
 	{
@@ -199,7 +199,7 @@ export const resources: Resource[] = [
 		category: 'Paper profiles',
 		title: 'Paper Profile',
 		text: 'A one-page profile for your interests, stories and messages.',
-		status: 'concept',
+		status: 'preview',
 		preview: 'profile'
 	},
 	{

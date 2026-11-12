@@ -75,7 +75,6 @@ export const chapters: Chapter[] = [
 		eyebrow: 'Start here',
 		title: `The ${brand.kitName}`,
 		text: 'One box of printed tools that helps you prepare for a blackout and build your community, starting now.',
-		note: 'Concept model: the box and prints are design proposals.',
 		duration: 2.4,
 		shot: still({ target: [-2.7, 1.1, 11.4], az: 0, el: 44, w: 7.6, h: 6 }),
 		targets: (t) => ({ kit: 1, kitOpen: after(t, 0.5), kitFan: after(t, 0.9) }),
@@ -163,7 +162,6 @@ export const chapters: Chapter[] = [
 		step: 5,
 		title: s[4].title,
 		text: 'Design a symbol and explain it on a form. The operators put it on the Blob’s public board, and your community can use it to mark events and places.',
-		note: 'Example symbols, for illustration.',
 		duration: 5.6,
 		shot: (t, p) =>
 			t < 3.6
@@ -209,7 +207,7 @@ export const chapters: Chapter[] = [
 	},
 	{
 		id: 'outro',
-		eyebrow: 'A speculative concept, 2026–2035',
+		eyebrow: 'Adaptive Network of Trust · 2026–2035',
 		title: 'Get to know your neighbours before you need them.',
 		text: 'ANT is a network made of people, places and paper. Start with the kit.',
 		logo: true,

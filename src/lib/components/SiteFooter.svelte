@@ -15,8 +15,8 @@
 		<div class="space-y-4 text-[0.95rem] leading-relaxed text-ant-grey">
 			<p class="label text-ant-white">About this campaign</p>
 			<p>
-				ANT is a speculative design campaign. It imagines a preparation period from 2026 to 2035, before a possible
-				large-scale blackout. The scenario is a design exercise, not a prediction.
+				ANT is a campaign for the preparation period from 2026 to 2035, before a possible large-scale blackout. It helps
+				neighbours get to know each other and set up their local Blob while the lights are still on.
 			</p>
 			<p>
 				This website is for raising awareness and preparing together beforehand.

@@ -1,7 +1,7 @@
 /**
  * Paper for the diorama: 2D-canvas painters for the printed things (profiles,
  * kit cards, signage, symbol board, form), in the same layouts as the
- * explainer video's parts. Everything is a CONCEPT mock-up in the ANT palette.
+ * explainer video's parts, in the ANT palette.
  * The only supplied artwork is the logo, painted from its original path data.
  */
 import { CanvasTexture, SRGBColorSpace } from 'three';
@@ -328,7 +328,6 @@ export const paintKitCard = (item: (typeof KIT_CARDS)[number]) => (ctx: Ctx) => 
 	else if (item.picto) drawPicto(ctx, item.picto, 32, 24, 76);
 	ctx.font = `700 17px ${SANS}`;
 	wrap(ctx, item.title, 120).forEach((line, i) => text(ctx, line, 70, 116 + i * 20, { size: 17, weight: 700, align: 'center' }));
-	label(ctx, 'Concept', 70, 174, 9, P.black, 'center');
 };
 
 /** Front of the kit box, 400 x 140. */
@@ -338,7 +337,6 @@ export const paintKitFront = (ctx: Ctx) => {
 	drawSymbol(ctx, 22, 26, 74, P.white);
 	text(ctx, 'Blackout', 116, 28, { size: 27, weight: 700, color: P.white });
 	text(ctx, 'Communication Kit', 116, 58, { size: 27, weight: 700, color: P.white });
-	label(ctx, 'Concept packaging', 116, 104, 11, P.green);
 };
 
 /** Blob Signage on a kiosk, 576 x 300. */
@@ -348,7 +346,6 @@ export const paintSign = (local: boolean) => (ctx: Ctx) => {
 	drawSymbol(ctx, 34, 36, 170, P.black);
 	text(ctx, local ? 'Local Blob' : 'Blob', 236, 62, { size: 62, weight: 700 });
 	text(ctx, 'Information point', 238, 138, { size: 30 });
-	label(ctx, 'Example sign · concept', 238, 246, 17);
 };
 
 /* ---------- request slip (250 x 112) ---------- */

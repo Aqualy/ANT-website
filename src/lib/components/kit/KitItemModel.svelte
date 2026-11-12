@@ -3,7 +3,7 @@
 	import type { KitItemId } from '#lib/content.js';
 	import { faces, type KitMaterials } from './materials';
 
-	/** Concept geometry for each item. Local origin = bottom centre. */
+	/** Geometry for each item. Local origin = bottom centre. */
 	let { id, m }: { id: KitItemId; m: KitMaterials } = $props();
 
 	const SHEET = 0.012;

@@ -90,7 +90,7 @@
 				class="sticky top-16 z-10 -mx-5 flex h-[50svh] flex-col bg-ant-grey px-5 pt-3 md:-mx-10 md:px-10 lg:top-[calc(4rem+2rem)] lg:mx-0 lg:h-[calc(100svh-4rem-4rem)] lg:px-0 lg:pt-0"
 			>
 				<div class="flex items-center justify-between">
-					<p class="chip">Illustrative example</p>
+					<p class="chip">How one resident joins</p>
 					<p class="label" aria-hidden="true">Step {step + 1} / {story.length}</p>
 				</div>
 				<div class="relative min-h-0 flex-1" bind:clientWidth={stageW} bind:clientHeight={stageH}>

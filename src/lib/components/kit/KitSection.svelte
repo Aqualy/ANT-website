@@ -95,7 +95,7 @@
 				class="relative h-[62svh] min-h-[24rem] max-h-[44rem] overflow-hidden rounded-[2rem] bg-ant-white"
 			>
 				<p class="sr-only">
-					Interactive 3D concept model of the Blackout Communication Kit: a black box with the ANT logo containing six
+					Interactive 3D model of the Blackout Communication Kit: a black box with the ANT logo containing six
 					printed items. All of its content is also available in the list next to it.
 				</p>
 				{#if show3D}
@@ -125,7 +125,6 @@
 					{/if}
 				{/if}
 
-				<span class="chip pointer-events-none absolute top-4 left-4 bg-ant-white">Concept model</span>
 				{#if show3D}
 					<p class="pointer-events-none absolute top-4 right-4 hidden rounded-full bg-ant-white px-3 py-1 text-sm sm:block">
 						Drag to rotate · Scroll to zoom
@@ -184,10 +183,6 @@
 					{/if}
 				</div>
 
-				<p class="mt-6 text-sm leading-snug">
-					A <strong>concept model</strong>: the box and printed items are design proposals in the ANT identity, not final
-					print designs.
-				</p>
 			</div>
 		</div>
 	</div>

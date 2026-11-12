@@ -1,7 +1,7 @@
 /**
  * Simple geometric pictograms in a 100x100 box, the same shapes as the
  * explainer video's (`ant-video/src/parts/Picto.tsx`), painted on canvas.
- * They are illustrative mock-ups, not final ANT pictograms.
+ * They are the ANT pictograms.
  */
 export type PictoId = 'person' | 'person2' | 'leaf' | 'bike' | 'note' | 'pot' | 'sprout' | 'wave' | 'tri' | 'ring' | 'cross' | 'stairs';
 
