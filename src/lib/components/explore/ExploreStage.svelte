@@ -160,8 +160,9 @@
 	$effect(() => {
 		if (!playing) return;
 		void explore.seq;
+		// After the last chapter, autoplay starts over from the first one.
 		const id = setTimeout(() => {
-			if (!next()) playing = false;
+			if (!(explore.index === last ? go(0, 'play') : next())) playing = false;
 		}, AUTOPLAY_MS);
 		return () => clearTimeout(id);
 	});
