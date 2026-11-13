@@ -14,18 +14,20 @@ export function createMaterials(t: KitTextures) {
 		green: matte('#c5d92f', 0.85),
 		paper: matte('#ffffff', 0.95),
 
-		lidTop: printed(t.lidTop, 0.7),
-		lidInside: printed(t.lidInside, 0.95),
-		lidFront: printed(t.lidFront),
+		lidTop: printed(t.lidTop, 0.75),
 		boxFront: printed(t.boxFront, 0.75),
-		pictogramSheet: printed(t.pictogramSheet, 0.95),
-		mapCover: printed(t.mapCover, 0.95),
-		signage: printed(t.signage, 0.9),
-		cardBack: printed(t.cardBack, 0.85),
-		cardEdge: printed(t.cardEdge, 0.95),
-		profileCard: printed(t.profileCard, 0.95),
-		stickerSheet: printed(t.stickerSheet, 0.6),
-		tokenFace: printed(t.tokenFace, 0.7)
+		boxBack: printed(t.boxBack, 0.75),
+		cardBoxFront: printed(t.cardBoxFront, 0.7),
+		cardBoxBack: printed(t.cardBoxBack, 0.7),
+		cardFront: printed(t.cardFront, 0.75),
+		cardFront2: printed(t.cardFront2, 0.75),
+		cardBack: printed(t.cardBack, 0.75),
+		profileCover: printed(t.profileCover, 0.9),
+		profileBack: printed(t.profileBack, 0.9),
+		// The sticker sheet is glossy.
+		stickerSheet: printed(t.stickerSheet, 0.35),
+		template: printed(t.template, 0.95),
+		map: printed(t.map, 0.95)
 	};
 	return m;
 }

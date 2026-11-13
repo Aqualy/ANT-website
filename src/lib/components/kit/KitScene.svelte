@@ -26,22 +26,24 @@
 	const FOCUS_TARGET: [number, number, number] = [0, 2.0, 1.0];
 	const FOCUS_OFFSET: [number, number, number] = [0, 0.95, 2.75];
 	const poses: Record<'closed' | 'open' | 'inspect', Pose> = {
-		closed: { target: [0, 0.45, 0], offset: [4.1, 3.2, 4.9] },
-		open: { target: [0, 0.85, 0], offset: [0, 5.9, 5.0] },
+		closed: { target: [0, 0.4, 0.1], offset: [4.0, 3.3, 5.0] },
+		open: { target: [-0.65, 0, 1.7], offset: [0, 11.2, 6.4] },
 		inspect: { target: FOCUS_TARGET, offset: FOCUS_OFFSET }
 	};
 
 	const focus: FocusPose = {
 		position: FOCUS_TARGET,
 		tiltX: Math.atan2(FOCUS_OFFSET[2], FOCUS_OFFSET[1]),
-		scale: 1.3
+		/** Length of an item's longest side when inspected. */
+		scale: 1.35
 	};
 
 	// Pull the camera back on narrow/portrait canvases so the kit still fits.
 	const distanceFactor = $derived.by(() => {
 		const { width, height } = $size;
 		const aspect = width / Math.max(1, height);
-		return Math.max(1, Math.min(1.7, 1.2 / Math.max(aspect, 0.4)));
+		const wide = kit.view === 'open' ? 1.45 : 1.2;
+		return Math.max(1, Math.min(2.4, wide / Math.max(aspect, 0.4)));
 	});
 
 	let camera = $state<PerspectiveCamera>();
@@ -120,7 +122,7 @@
 		rotateSpeed={0.7}
 		zoomSpeed={0.7}
 		minDistance={2.2}
-		maxDistance={13}
+		maxDistance={24}
 		minPolarAngle={0.12}
 		maxPolarAngle={1.42}
 	/>
@@ -132,13 +134,13 @@
 	position={[3.5, 7, 4.5]}
 	intensity={2.4}
 	castShadow
-	shadow.mapSize={[1024, 1024]}
-	shadow.camera.left={-4}
-	shadow.camera.right={4}
-	shadow.camera.top={4}
-	shadow.camera.bottom={-4}
-	shadow.camera.near={4}
-	shadow.camera.far={14}
+	shadow.mapSize={[2048, 2048]}
+	shadow.camera.left={-8}
+	shadow.camera.right={8}
+	shadow.camera.top={6}
+	shadow.camera.bottom={-6}
+	shadow.camera.near={2}
+	shadow.camera.far={20}
 	shadow.bias={-0.0008}
 	shadow.normalBias={0.035}
 	shadow.radius={2}
@@ -158,9 +160,11 @@
 	onboxclick={kit.view === 'closed' ? () => kit.open() : undefined}
 />
 
-{#each kitItems as item (item.id)}
+{#each kitItems as item, i (item.id)}
 	<KitObject
 		id={item.id}
+		index={i}
+		out={kit.isOpen}
 		focused={kit.view === 'inspect' && kit.selected === item.id}
 		interactive={kit.isOpen}
 		instant={kit.reducedMotion}

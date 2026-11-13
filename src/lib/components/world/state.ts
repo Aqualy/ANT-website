@@ -13,6 +13,21 @@ export type WorldState = {
 	/** Green spreads over the ground; blobs it reaches turn black. */
 	green: number;
 
+	/*
+	 * The diorama is a pop-up book: only what a scene is about stands up, the
+	 * rest lies folded flat, so the ground around the subject stays empty.
+	 */
+	/** The whole neighbourhood stands: houses, streets, every Blob, booklet and board. */
+	town: number;
+	/** Noor's house stands. */
+	home: number;
+	/** The Blob's booklet of public profiles stands. */
+	book: number;
+	/** The public symbol board stands. */
+	boardUp: number;
+	/** The streets and houses east of the local Blob stand (where the new symbol gets used). */
+	east: number;
+
 	/** Blackout Communication Kit box appears. */
 	kit: number;
 	kitOpen: number;
@@ -70,6 +85,7 @@ export type WorldState = {
 
 export const WORLD_KEYS = [
 	'network', 'far', 'blobSpot', 'green',
+	'town', 'home', 'book', 'boardUp', 'east',
 	'kit', 'kitOpen', 'kitFan',
 	'profile', 'pPhoto', 'pName', 'pStory', 'pTokens', 'pWritten',
 	'walkNoor', 'carry', 'handIn',

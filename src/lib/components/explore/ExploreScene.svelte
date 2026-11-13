@@ -6,7 +6,7 @@
 	 */
 	import { T, useTask, useThrelte } from '@threlte/core';
 	import { onDestroy, untrack } from 'svelte';
-	import { Vector3, type PerspectiveCamera } from 'three';
+	import { Raycaster, Vector2, Vector3, type PerspectiveCamera } from 'three';
 	import { WORLD_KEYS, restState, type WorldState } from '#lib/components/world/state.js';
 	import { createWorld } from '#lib/components/world/world.js';
 	import { chapters, type Chapter } from './chapters.js';
@@ -18,8 +18,8 @@
 		place
 	}: {
 		explore: ExploreState;
-		/** Parts of the canvas covered by the page's chip row and text panel; the shot is framed in what is left. */
-		inset: { top: number; right: number; bottom: number };
+		/** Parts of the canvas covered by the chapter text and the controls; the shot is framed in what is left. */
+		inset: { top: number; left: number; right: number; bottom: number };
 		place: (id: string, x: number, y: number, width: number) => void;
 	} = $props();
 
@@ -27,12 +27,18 @@
 	const world = createWorld(renderer);
 	onDestroy(() => world.dispose());
 
+	const KIT_SUBJECTS = ['kitMap', 'kitProfile', 'kitTokens', 'kitSymbols', 'kitCards'] as const;
 	const FOV = 30;
 	const TAN = Math.tan((FOV / 2) * (Math.PI / 180));
 	const RAD = Math.PI / 180;
 	/** How fast each channel closes in on its target (per second). Unlisted: 6. */
 	const RATE: Partial<Record<keyof WorldState, number>> = {
 		network: 2.4,
+		town: 3,
+		home: 4,
+		book: 5,
+		boardUp: 5,
+		east: 3,
 		green: 1.6,
 		kitFan: 4,
 		pStory: 3,
@@ -66,6 +72,7 @@
 	const goalPos = new Vector3();
 	const goalTarget = new Vector3();
 	const p = new Vector3();
+	const focusAt = new Vector3();
 	let lastShown = '';
 
 	function resolve(c: Chapter, time: number, out: WorldState) {
@@ -99,6 +106,7 @@
 	$effect(() => {
 		void explore.choice;
 		void explore.pageTurned;
+		void explore.focus;
 		void $size;
 		void inset;
 		void camera;
@@ -127,16 +135,31 @@
 				}
 			}
 			world.apply(cur);
+			// Looking closely at one print from the kit: the others step away, so nothing peeks in around it.
+			if (explore.focus?.startsWith('kit'))
+				for (const id of KIT_SUBJECTS) if (id !== explore.focus) world.subjects[id].obj.parent!.visible = false;
 
 			/* camera */
 			const w = Math.max(1, $size.width);
 			const h = Math.max(1, $size.height);
 			// Frame the subject in the free part of the canvas, and shift the picture so that part is centred.
-			const freeW = Math.max(1, w - inset.right);
+			const freeW = Math.max(1, w - inset.left - inset.right);
 			const freeH = Math.max(1, h - inset.top - inset.bottom);
-			const shot = ch.shot(t, freeW < freeH);
+			let shot = ch.shot(t, freeW < freeH);
+			// Looking closer: move in until the print fills the free part of the view.
+			const sized = explore.focus ? world.locate(explore.focus, focusAt) : null;
+			if (explore.focus && sized) {
+				const sub = world.subjects[explore.focus];
+				shot = {
+					target: [focusAt.x, focusAt.y, focusAt.z],
+					az: sub.az ?? shot.az,
+					el: sub.el ?? shot.el,
+					w: sized.w * 1.08,
+					h: sized.h * 1.08
+				};
+			}
 			const dist = Math.max(shot.h / 2 / (TAN * (freeH / h)), shot.w / 2 / (TAN * (freeW / h)));
-			camera.setViewOffset(w, h, inset.right / 2, (inset.bottom - inset.top) / 2, w, h);
+			camera.setViewOffset(w, h, (inset.right - inset.left) / 2, (inset.bottom - inset.top) / 2, w, h);
 			const az = shot.az * RAD;
 			const el = shot.el * RAD;
 			goalTarget.set(...shot.target);
@@ -163,6 +186,8 @@
 			const shown: string[] = [];
 			const lit: string[] = [];
 			for (const l of ch.labels) {
+				// Close up, the print speaks for itself.
+				if (explore.focus) break;
 				if (t < (l.from ?? 0) || (l.to !== undefined && !(t < l.to)) || (l.when && !l.when(ui))) continue;
 				shown.push(l.id);
 				if (typeof l.on === 'function' ? l.on(t, ui) : l.on) lit.push(l.id);
@@ -186,6 +211,46 @@
 		},
 		{ autoInvalidate: false, running: () => animating }
 	);
+
+	/* ---------- look closer: click or tap a print; again, or anywhere else, to step back ---------- */
+	const ray = new Raycaster();
+	const ndc = new Vector2();
+	function hit(e: PointerEvent) {
+		if (!camera) return null;
+		const r = renderer.domElement.getBoundingClientRect();
+		ndc.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+		ray.setFromCamera(ndc, camera);
+		const id = world.pick(ray);
+		return id && ch.closer?.some((c) => c.id === id) ? id : null;
+	}
+	$effect(() => {
+		const el = renderer.domElement;
+		let down: { x: number; y: number } | null = null;
+		const onDown = (e: PointerEvent) => (down = { x: e.clientX, y: e.clientY });
+		const onUp = (e: PointerEvent) => {
+			if (!down || Math.hypot(e.clientX - down.x, e.clientY - down.y) > 8) return;
+			down = null;
+			const id = hit(e);
+			explore.focus = explore.focus ? null : id;
+		};
+		let queued = false;
+		const onMove = (e: PointerEvent) => {
+			if (queued || e.pointerType !== 'mouse') return;
+			queued = true;
+			requestAnimationFrame(() => {
+				queued = false;
+				el.style.cursor = explore.focus ? 'zoom-out' : hit(e) ? 'zoom-in' : '';
+			});
+		};
+		el.addEventListener('pointerdown', onDown);
+		el.addEventListener('pointerup', onUp);
+		el.addEventListener('pointermove', onMove);
+		return () => {
+			el.removeEventListener('pointerdown', onDown);
+			el.removeEventListener('pointerup', onUp);
+			el.removeEventListener('pointermove', onMove);
+		};
+	});
 
 	// For checking that the page really is idle: /explore?debug
 	if (new URLSearchParams(location.search).has('debug')) {

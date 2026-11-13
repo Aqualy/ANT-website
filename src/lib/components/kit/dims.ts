@@ -1,33 +1,57 @@
 import type { KitItemId } from '#lib/content.js';
+import { SIZE } from '#lib/prints/real.js';
 
-/** Box proportions in scene units (roughly 1 unit = 10 cm): a 32 x 22 x 8 cm kit box. */
-export const BW = 3.2;
-export const BD = 2.2;
-export const BH = 0.8;
-export const WALL = 0.05;
-export const INSERT_H = 0.3;
-/** Top of the grey insert, where items rest. */
-export const FLOOR = WALL + INSERT_H;
+/** Scene units per millimetre: the 240 mm box is 3.2 units wide (1 unit = 75 mm). Everything is to scale. */
+export const U = 3.2 / SIZE.kit.w;
 
-/** Telescoping lid. */
-export const LID_GAP = 0.012;
-export const LW = BW + 2 * (WALL + LID_GAP);
-export const LD = BD + 2 * (WALL + LID_GAP);
-export const LH = 0.32;
-export const LID_TOP_Y = BH + LID_GAP + WALL;
+/** The real kit box: 240 x 220 x 55 mm, a mailer box with a hinged lid and a tuck flap. */
+export const BW = SIZE.kit.w * U;
+export const BD = SIZE.kit.d * U;
+export const BH = SIZE.kit.h * U;
+export const WALL = 0.03;
+/** Inside floor, where the packed items rest. */
+export const FLOOR = WALL;
 export const LID_OPEN_ANGLE = -1.92;
 
-const CX = (BW - 2 * WALL) / 3;
-const CZ = (BD - 2 * WALL) / 4;
+/** Item sizes in scene units. */
+export const ITEM = {
+	page: { w: SIZE.page.w * U, d: SIZE.page.h * U },
+	sheet: { w: SIZE.sheet.w * U, d: SIZE.sheet.h * U },
+	template: { w: SIZE.template.w * U, d: SIZE.template.h * U },
+	map: { w: SIZE.map.w * U, d: SIZE.map.h * U },
+	cardBox: { w: SIZE.cardBox.w * U, d: SIZE.cardBox.h * U, h: SIZE.cardBox.d * U },
+	card: { w: SIZE.card.w * U, d: SIZE.card.h * U }
+} as const;
 
-/** Resting place (x, z, rotation-y) for each item in its compartment. */
-export const homes: Record<KitItemId, [number, number, number]> = {
-	language: [-CX, -CZ, 0.03],
-	map: [0, -CZ, -0.02],
-	signage: [CX, -CZ, 0],
-	cards: [-CX, CZ, -0.06],
-	profiles: [0, CZ, 0.04],
-	tokens: [CX, CZ, 0]
+/**
+ * Packed in the closed box: x, y (above the floor), z, rotation-y, scale.
+ * The A3 map travels folded in quarters, so it's packed at half size and
+ * unfolds as it comes out.
+ */
+export const packed: Record<KitItemId, [number, number, number, number, number?]> = {
+	map: [-0.5, FLOOR, 0, 0, 0.5],
+	profiles: [0.6, FLOOR + 0.03, 0, 0.02],
+	tokens: [0, FLOOR + 0.07, 0.05, -0.01],
+	symbols: [-0.75, FLOOR + 0.085, -0.3, 0.03],
+	cards: [0.45, FLOOR + 0.12, 0.45, 0]
+};
+
+/** Laid out on the table once the kit is open: x, z, rotation-y. */
+export const laid: Record<KitItemId, [number, number, number]> = {
+	map: [-4.15, 1.45, 0.03],
+	profiles: [-0.75, 3.4, -0.03],
+	tokens: [1.85, 3.3, 0.04],
+	symbols: [4.15, 3.1, -0.05],
+	cards: [2.8, 0.05, -0.06]
+};
+
+/** The longest side of each item, so the inspect view can show each one at the same size. */
+export const span: Record<KitItemId, number> = {
+	map: ITEM.map.d,
+	profiles: ITEM.page.d,
+	tokens: ITEM.sheet.d,
+	symbols: ITEM.template.d,
+	cards: 2.0
 };
 
 /** Frame-rate independent exponential smoothing. */

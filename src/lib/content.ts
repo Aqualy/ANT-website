@@ -20,21 +20,7 @@ export const nav = [
 
 export type NodeId = 'you' | 'blob' | 'booklet' | 'private' | 'board' | 'marks' | 'far';
 
-/** The parts of the network, drawn as blobs in the story scene. */
-export const networkNodes: { id: NodeId; label: string }[] = [
-	{ id: 'you', label: 'You' },
-	{ id: 'blob', label: 'Local Blob' },
-	{ id: 'booklet', label: 'Public booklet' },
-	{ id: 'private', label: 'Private profile' },
-	{ id: 'board', label: 'Symbol board' },
-	{ id: 'marks', label: 'Marked places' },
-	{ id: 'far', label: 'Another Blob' }
-];
-
-/**
- * One resident joining the network through a local Blob.
- * Each step lights up a node and grows a connection from the `from` nodes.
- */
+/** One resident joining the network through a local Blob (the copy of the /explore chapters). */
 export const story: { node: NodeId; from: NodeId[]; title: string; text: string }[] = [
 	{
 		node: 'you',
@@ -82,7 +68,7 @@ export const story: { node: NodeId; from: NodeId[]; title: string; text: string 
 
 /* ---------- The Kit ---------- */
 
-export type KitItemId = 'language' | 'map' | 'cards' | 'profiles' | 'tokens' | 'signage';
+export type KitItemId = 'profiles' | 'tokens' | 'symbols' | 'map' | 'cards';
 
 export type KitItem = {
 	id: KitItemId;
@@ -92,48 +78,42 @@ export type KitItem = {
 	example: string;
 };
 
+/** What is in the box, as printed. */
 export const kitItems: KitItem[] = [
 	{
-		id: 'language',
-		title: 'Visual Language Kit',
-		form: 'Printed pictogram sheets',
-		description: 'A starter set of shared pictograms for public information on paper.',
-		example: 'Use a symbol to mark an information point so anyone can recognise it.'
-	},
-	{
-		id: 'map',
-		title: 'Neighbourhood Map',
-		form: 'Folded paper map',
-		description: 'A paper guide to the meeting and information points in your area.',
-		example: 'Find the place where your neighbours have agreed to meet.'
-	},
-	{
-		id: 'cards',
-		title: 'Community Cards',
-		form: 'Deck of cards in a band',
-		description: 'Prompts for workshops and blackout practice scenarios.',
-		example: 'Draw a card and practise sharing an update without phones.'
-	},
-	{
 		id: 'profiles',
-		title: 'Paper Profiles',
-		form: 'Stack of profile cards',
-		description: 'A social profile on paper for your interests, stories and messages.',
+		title: 'Paper Profile',
+		form: 'Booklet to fill in',
+		description: 'A social profile on paper: your picture and name, your story, what you’re into and what you can help with.',
 		example: 'Hand in your profile at a Blob and meet a neighbour with a shared interest.'
 	},
 	{
 		id: 'tokens',
 		title: 'Interest Tokens',
-		form: 'Tokens and sticker sheet',
-		description: 'Small physical markers that show interests and participation.',
-		example: 'Add a sticker to your paper profile to show what you can help with.'
+		form: 'Sticker sheet with 20 tokens',
+		description: 'One round sticker for each kind of interest, from sport and gardening to music and volunteering.',
+		example: 'Peel a token, stick it in a circle on your Paper Profile and write what it means to you.'
 	},
 	{
-		id: 'signage',
-		title: 'Blob Signage',
-		form: 'Folded signs',
-		description: 'Printed signs that clearly label the places where information is shared.',
-		example: 'Put up a sign so everyone can find the local Blob.'
+		id: 'symbols',
+		title: 'Symbol System Templates',
+		form: 'A6 template cards',
+		description: 'Cards to draw a new symbol and write down what it means and what it marks.',
+		example: 'Design a symbol for an event or a place and hand it in at your Blob.'
+	},
+	{
+		id: 'map',
+		title: 'Neighbourhood Map',
+		form: 'Folded A3 map',
+		description: 'Your area on paper, with every Blob and the schools, care and food within walking distance.',
+		example: 'Find the Blob nearest to the school, pharmacy or shop you already walk to.'
+	},
+	{
+		id: 'cards',
+		title: 'Practise Blackout Cards',
+		form: 'Box of scenario cards',
+		description: 'Realistic blackout scenarios to discuss or act out together: 15 minutes, 2–8 people.',
+		example: 'Draw a card and find a solution together without digital technology.'
 	}
 ];
 

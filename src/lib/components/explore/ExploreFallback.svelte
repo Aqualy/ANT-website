@@ -26,7 +26,7 @@
 		[670, 130],
 		[650, 440]
 	];
-	const kitItems = ['Visual Language Kit', 'Neighbourhood Map', 'Community Cards', 'Paper Profiles', 'Interest Tokens', 'Blob Signage'];
+	const kitItems = ['Neighbourhood Map', 'Paper Profile', 'Interest Tokens', 'Symbol System Templates', 'Practise Blackout Cards'];
 </script>
 
 {#snippet house(x: number, y: number)}
@@ -78,12 +78,13 @@
 			<circle cx="400" cy="290" r="70" fill={index === 8 ? K : A} />
 			<text x="400" y="296" text-anchor="middle" font-size="18" font-weight="700" fill={index === 8 ? W : K}>Local Blob</text>
 		{:else if index === 1}
-			<rect x="160" y="400" width="480" height="110" fill={K} />
-			<text x="184" y="462" font-size="26" font-weight="700" fill={W}>Blackout Communication Kit</text>
+			<rect x="160" y="400" width="480" height="110" fill={W} stroke={K} stroke-width="2" />
+			<rect x="160" y="470" width="480" height="40" fill={A} />
+			<text x="184" y="452" font-size="26" font-weight="700">Blackout Communication Kit</text>
 			{#each kitItems as t, i (t)}
-				<rect x={52 + i * 118} y={130 + Math.abs(i - 2.5) * 22} width="106" height="150" fill={W} stroke={K} stroke-width="2" />
-				<text x={62 + i * 118} y={164 + Math.abs(i - 2.5) * 22} font-size="24" font-weight="700">{i + 1}</text>
-				<foreignObject x={58 + i * 118} y={196 + Math.abs(i - 2.5) * 22} width="96" height="70">
+				<rect x={111 + i * 118} y={130 + Math.abs(i - 2) * 22} width="106" height="150" fill={W} stroke={K} stroke-width="2" />
+				<text x={121 + i * 118} y={164 + Math.abs(i - 2) * 22} font-size="24" font-weight="700">{i + 1}</text>
+				<foreignObject x={117 + i * 118} y={196 + Math.abs(i - 2) * 22} width="96" height="70">
 					<p style="margin:0;font:700 12.5px/1.15 var(--font-sans);color:#000">{t}</p>
 				</foreignObject>
 			{/each}

@@ -1,3 +1,4 @@
+import type { SubjectId } from '#lib/components/world/world.js';
 import { chapters, type Ui } from './chapters.js';
 
 /**
@@ -21,6 +22,8 @@ export class ExploreState {
 	shown = $state<string[]>([]);
 	/** Ids of the chips filled green right now (set by the scene). */
 	lit = $state<string[]>([]);
+	/** The print the camera has moved in on, if any. Cleared on every navigation. */
+	focus = $state<SubjectId | null>(null);
 	/** True while anything is moving (set by the scene). */
 	busy = $state(false);
 
@@ -37,6 +40,7 @@ export class ExploreState {
 		this.index = next;
 		this.mode = mode;
 		this.pageTurned = true;
+		this.focus = null;
 		this.seq++;
 		return true;
 	}

@@ -4,7 +4,7 @@
  */
 import { brand, story } from '#lib/content.js';
 import type { WorldState } from '#lib/components/world/state.js';
-import type { AnchorId } from '#lib/components/world/world.js';
+import type { AnchorId, SubjectId } from '#lib/components/world/world.js';
 
 /** What the visitor has toggled inside a chapter. */
 export type Ui = { choice: 'public' | 'private'; pageTurned: boolean };
@@ -50,6 +50,8 @@ export type Chapter = {
 	/** World state wanted `t` seconds in (Infinity = settled). Unlisted channels are 0. */
 	targets: (t: number, ui: Ui) => Partial<WorldState>;
 	labels: Label[];
+	/** Prints in view that the camera can move in on ("Look closer"). */
+	closer?: { id: SubjectId; label: string }[];
 };
 
 const after = (t: number, at: number) => (t >= at ? 1 : 0);
@@ -66,8 +68,8 @@ export const chapters: Chapter[] = [
 		text: 'ANT connects neighbours through local Blobs: paper profiles to get to know each other, shared symbols to mark the neighbourhood and, when there is power, light between Blobs.',
 		logo: true,
 		duration: 1.6,
-		shot: still({ target: [0, 0, 0.5], az: 24, el: 36, w: 37, h: 25 }, { w: 32 }),
-		targets: () => ({ network: 1, far: 1 }),
+		shot: still({ target: [0, 0, 0], az: 24, el: 38, w: 54, h: 34 }, { w: 46, h: 40 }),
+		targets: () => ({ town: 1, network: 1, far: 1 }),
 		labels: [{ id: 'blob', text: 'Local Blob', anchor: 'localBlob', kind: 'caption' }]
 	},
 	{
@@ -76,9 +78,17 @@ export const chapters: Chapter[] = [
 		title: `The ${brand.kitName}`,
 		text: 'One box of printed tools that helps you prepare for a blackout and build your community, starting now.',
 		duration: 2.4,
-		shot: still({ target: [-2.7, 1.1, 11.4], az: 0, el: 44, w: 7.6, h: 6 }),
+		shot: still({ target: [-10.6, 1.55, 11.7], az: 0, el: 30, w: 5.0, h: 3.7 }),
+		// Only the kit stands: the prints are the subject.
 		targets: (t) => ({ kit: 1, kitOpen: after(t, 0.5), kitFan: after(t, 0.9) }),
-		labels: [{ id: 'noor', text: 'Noor', anchor: 'noor', place: 'below' }]
+		labels: [],
+		closer: [
+			{ id: 'kitMap', label: 'Neighbourhood map' },
+			{ id: 'kitProfile', label: 'Paper Profile' },
+			{ id: 'kitTokens', label: 'Interest tokens' },
+			{ id: 'kitSymbols', label: 'Symbol template' },
+			{ id: 'kitCards', label: 'Practise Blackout Cards' }
+		]
 	},
 	{
 		id: 'profile',
@@ -87,7 +97,7 @@ export const chapters: Chapter[] = [
 		title: s[0].title,
 		text: s[0].text,
 		duration: 5.6,
-		shot: still({ target: [-3, 1.5, 11.4], az: 0, el: 44, w: 7.4, h: 6.2 }),
+		shot: still({ target: [-10.8, 2.0, 11.6], az: 0, el: 26, w: 4.9, h: 3.1 }),
 		targets: (t) => ({
 			kit: 1,
 			kitOpen: 1,
@@ -98,7 +108,13 @@ export const chapters: Chapter[] = [
 			pTokens: t < 2.5 ? 0 : Math.min(3, 1 + Math.floor((t - 2.5) / 0.55)),
 			pWritten: after(t, 4.4)
 		}),
-		labels: [{ id: 'noor', text: 'Noor', anchor: 'noor', place: 'below' }]
+		labels: [],
+		closer: [
+			{ id: 'sheet', label: 'Sticker sheet' },
+			{ id: 'cover', label: 'Cover' },
+			{ id: 'story', label: 'My story' },
+			{ id: 'interests', label: 'What I’m into' }
+		]
 	},
 	{
 		id: 'blob',
@@ -124,12 +140,16 @@ export const chapters: Chapter[] = [
 		title: s[2].title,
 		text: s[2].text,
 		duration: 3.4,
-		shot: still({ target: [-7, 2.0, 0.6], az: 0, el: 30, w: 4.5, h: 3.9 }),
-		targets: (t, ui) => ({ blobSpot: 1, flip: ui.pageTurned ? after(t, 0.8) : 0, match: ui.pageTurned ? after(t, 2.0) : 0 }),
+		shot: still({ target: [-7, 2.0, 0.6], az: 0, el: 30, w: 3.9, h: 2.7 }),
+		targets: (t, ui) => ({ blobSpot: 1, book: 1, flip: ui.pageTurned ? after(t, 0.8) : 0, match: ui.pageTurned ? after(t, 2.0) : 0 }),
 		labels: [
 			{ id: 'booklet', text: 'Blob booklet · public profiles', anchor: 'booklet', kind: 'caption' },
 			{ id: 'match', text: 'Shared interest: gardening', anchor: 'stage', kind: 'chip', on: true, from: 2.6, when: (ui) => ui.pageTurned },
 			{ id: 'turn', text: 'Turn the page', anchor: 'stage', kind: 'chip', from: 2.6, action: 'turn' }
+		],
+		closer: [
+			{ id: 'bookLeft', label: 'Left page' },
+			{ id: 'bookRight', label: 'Right page' }
 		]
 	},
 	{
@@ -154,7 +174,8 @@ export const chapters: Chapter[] = [
 			{ id: 'noor', text: 'Noor', anchor: 'noor', place: 'below' },
 			{ id: 'held', text: 'Held until Noor’s next visit', anchor: 'counter', place: 'below', from: 2.4, to: 4.6 },
 			{ id: 'accept', text: 'Noor accepts', anchor: 'stage', kind: 'chip', on: true, from: 5.4 }
-		]
+		],
+		closer: [{ id: 'priv', label: 'Noor’s profile' }]
 	},
 	{
 		id: 'symbols',
@@ -168,7 +189,11 @@ export const chapters: Chapter[] = [
 				? { target: [6.9, 2.15, -0.1], az: 0, el: 10, w: 5.6, h: 4.3 }
 				: { target: [8.1, 1.9, -2.8], az: 12, el: 22, w: p ? 9 : 11, h: 8.4 },
 		targets: (t) => ({
-			blobSpot: 1,
+			// The kiosk folds away once the symbol leaves the Blob.
+			blobSpot: t < 3.3 ? 1 : 0,
+			boardUp: 1,
+			// The streets it will be used on stand up as the symbol goes out into them.
+			east: after(t, 3.3),
 			form: between(t, 0, 3.3),
 			formDraw: after(t, 0.4),
 			toBoard: after(t, 2.6),
@@ -178,7 +203,8 @@ export const chapters: Chapter[] = [
 		labels: [
 			{ id: 'pinA', text: 'Sat · open garden', anchor: 'pinA', kind: 'chip', from: 4.6 },
 			{ id: 'pinB', text: 'The garden', anchor: 'pinB', kind: 'chip', from: 4.9 }
-		]
+		],
+		closer: [{ id: 'board', label: 'Symbol board' }]
 	},
 	{
 		id: 'further',
@@ -189,6 +215,7 @@ export const chapters: Chapter[] = [
 		duration: 13,
 		shot: still({ target: [0.5, 0, -1.2], az: 0, el: 50, w: 44, h: 30 }, { w: 40 }),
 		targets: (t) => ({
+			town: 1,
 			blobSpot: 1,
 			far: 1,
 			chains: t < 4.4 ? after(t, 0.6) : 0,
@@ -217,7 +244,7 @@ export const chapters: Chapter[] = [
 		],
 		duration: 2.2,
 		shot: still({ target: [0, 0, -1], az: 0, el: 76, w: 46, h: 38 }, { w: 34, h: 44 }),
-		targets: () => ({ network: 1, far: 1, green: 1 }),
+		targets: () => ({ town: 1, network: 1, far: 1, green: 1 }),
 		labels: []
 	}
 ];

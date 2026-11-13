@@ -15,8 +15,8 @@
 		onfail
 	}: {
 		explore: ExploreState;
-		/** Parts of the view covered by the page's chip row and text panel (CSS px). */
-		inset: { top: number; right: number; bottom: number };
+		/** Parts of the view covered by the chapter text and the controls (CSS px). */
+		inset: { top: number; left: number; right: number; bottom: number };
 		onready: () => void;
 		onfail: () => void;
 	} = $props();
@@ -84,8 +84,9 @@
 		let own = widths.get(el);
 		if (own === undefined) widths.set(el, (own = (el.firstElementChild as HTMLElement).offsetWidth));
 		const half = own / 2 + 6;
-		const free = width - inset.right;
-		const cx = half * 2 >= free ? free / 2 : Math.max(half, Math.min(free - half, x));
+		const lo = inset.left;
+		const hi = width - inset.right;
+		const cx = half * 2 >= hi - lo ? (lo + hi) / 2 : Math.max(lo + half, Math.min(hi - half, x));
 		el.style.transform = `translate(${cx.toFixed(1)}px,${y.toFixed(1)}px)`;
 	}
 
@@ -137,7 +138,8 @@
 			</div>
 		{/each}
 		<div
-			class="absolute left-4 flex flex-wrap justify-center gap-2"
+			class="absolute flex flex-wrap justify-center gap-2"
+			style:left="{inset.left + 16}px"
 			style:right="{inset.right + 16}px"
 			style:bottom="{inset.bottom + 16}px"
 		>

@@ -14,7 +14,7 @@
 
 <div class="flex h-full w-full flex-col items-center justify-center gap-4 p-4">
 	<svg viewBox="0 0 600 400" class="h-auto w-full max-w-[34rem]" aria-hidden="true">
-		<rect x="10" y="20" width="580" height="360" fill="#000" />
+		<rect x="10" y="20" width="580" height="360" fill="#ffffff" stroke="#000" stroke-width="3" />
 		<rect x="22" y="32" width="556" height="336" fill="#dddddd" />
 		{#each cells as c (c.id)}
 			<rect

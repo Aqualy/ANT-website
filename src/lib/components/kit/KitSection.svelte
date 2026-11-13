@@ -95,8 +95,8 @@
 				class="relative h-[62svh] min-h-[24rem] max-h-[44rem] overflow-hidden rounded-[2rem] bg-ant-white"
 			>
 				<p class="sr-only">
-					Interactive 3D model of the Blackout Communication Kit: a black box with the ANT logo containing six
-					printed items. All of its content is also available in the list next to it.
+					Interactive 3D model of the Blackout Communication Kit: a white box with the ANT logo and a green
+					front, holding five printed items. All of its content is also available in the list next to it.
 				</p>
 				{#if show3D}
 					{#if near && viewerModule}
@@ -177,7 +177,7 @@
 						<p class="lead mt-3">{selectedItem.description}</p>
 						<p class="mt-3 leading-snug"><strong>For example:</strong> {selectedItem.example}</p>
 					{:else if kit.view === 'open'}
-						<p class="lead">Six printed tools. Pick one in the box or in the list to see what it is for.</p>
+						<p class="lead">Five printed tools. Pick one on the table or in the list to see what it is for.</p>
 					{:else}
 						<p class="lead">Open the kit to see the printed tools that help neighbours set up ANT.</p>
 					{/if}
